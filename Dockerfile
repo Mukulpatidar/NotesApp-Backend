@@ -1,30 +1,21 @@
-# Use an official OpenJDK 17 image
+# Use OpenJDK 17 slim image
 FROM openjdk:17-jdk-slim
 
-# Set working directory inside the container
+# Install Maven
+RUN apt-get update && apt-get install -y maven
+
+# Set working directory
 WORKDIR /app
 
-# Install Maven (for building the project)
-RUN apt-get update && \
-    apt-get install -y maven && \
-    rm -rf /var/lib/apt/lists/*
-
-# Copy Maven wrapper and project files
-COPY mvnw .
-COPY .mvn .mvn
+# Copy project files
 COPY pom.xml .
+COPY src src
 
-# Copy source code
-COPY src ./src
-
-# Make mvnw executable
-RUN chmod +x mvnw
-
-# Build the Spring Boot project (skip tests)
-RUN ./mvnw clean package -DskipTests
+# Build the project (skip tests to make build faster)
+RUN mvn clean package -DskipTests
 
 # Expose the port your app will run on
 EXPOSE 8080
 
-# Run the Spring Boot JAR
+# Run the JAR
 CMD ["java", "-jar", "target/notesapp-0.0.1-SNAPSHOT.jar"]
