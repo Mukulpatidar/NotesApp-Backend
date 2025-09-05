@@ -3,9 +3,5 @@ services:
     name: notesapp-backend
     env: docker
     plan: free
-
-    buildCommand: ./mvnw clean package -DskipTests
+    dockerfilePath: Dockerfile   # Make sure this points to your Dockerfile
     startCommand: java -jar target/notesapp-0.0.1-SNAPSHOT.jar
-    envVars:
-      - key: JAVA_VERSION
-        value: 17
